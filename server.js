@@ -51,8 +51,19 @@ db.once("open", () => {
 app.get("/api/v1/rooms", async (req, res) => {
   try {
     const { fields } = req.query;
-    const filter = fields.split(",").join(" ");
-    const rooms = await Room.find().select(filter);
+    let filter;
+    let rooms;
+
+    if (fields) {
+      filter = fields.split(",").join(" ");
+    }
+
+    if (fields) {
+      rooms = await Room.find().select(filter);
+    } else {
+      rooms = await Room.find();
+    }
+
     res.status(200).json({ status: "success", data: rooms });
   } catch (error) {
     res.status(500).send(error);
